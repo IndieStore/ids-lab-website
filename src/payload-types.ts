@@ -69,6 +69,10 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    people: Person;
+    projects: Project;
+    publications: Publication;
+    'research-areas': ResearchArea;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,17 +82,25 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    people: PeopleSelect<false> | PeopleSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    publications: PublicationsSelect<false> | PublicationsSelect<true>;
+    'research-areas': ResearchAreasSelect<false> | ResearchAreasSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-settings': SiteSetting;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -122,7 +134,7 @@ export interface UserAuthOperations {
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
+  id: number;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -147,7 +159,7 @@ export interface User {
  * via the `definition` "media".
  */
 export interface Media {
-  id: string;
+  id: number;
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -160,13 +172,186 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    avatar?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "people".
+ */
+export interface Person {
+  id: number;
+  name: string;
+  role: 'pi' | 'phd' | 'jrf' | 'intern';
+  photo?: (number | null) | Media;
+  bio: string;
+  email: string;
+  links?: {
+    linkedin?: string | null;
+    googleScholar?: string | null;
+    researchGate?: string | null;
+    cv?: (number | null) | Media;
+  };
+  researchInterests?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Lower number = appears first within the same role group
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  title: string;
+  /**
+   * URL-friendly identifier e.g. "smart-grid-analysis". Auto-fill this from the title.
+   */
+  slug: string;
+  thumbnail?: (number | null) | Media;
+  /**
+   * Shown on the project card (2–3 lines)
+   */
+  shortDescription: string;
+  /**
+   * Shown on the project detail page
+   */
+  fullDescription: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  tags?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
+  status: 'ongoing' | 'completed';
+  teamMembers?: (number | Person)[] | null;
+  timeline: {
+    startDate: string;
+    /**
+     * Leave empty if ongoing
+     */
+    endDate?: string | null;
+  };
+  /**
+   * e.g. DST, SERB, ISRO — leave blank if none
+   */
+  fundingAgency?: string | null;
+  linkedPublications?: (number | Publication)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "publications".
+ */
+export interface Publication {
+  id: number;
+  title: string;
+  /**
+   * e.g. "Sharma R., Verma A., Kumar P."
+   */
+  authors: string;
+  /**
+   * Publication year e.g. 2024
+   */
+  year: number;
+  type: 'journal' | 'conference' | 'workshop' | 'book-chapter' | 'preprint';
+  /**
+   * e.g. "IEEE Transactions on Power Systems" or "NeurIPS 2024"
+   */
+  venueName: string;
+  /**
+   * Used for filtering on the Research page
+   */
+  researchAreas?: (number | ResearchArea)[] | null;
+  /**
+   * Optional — shown on hover or expanded view
+   */
+  abstract?: string | null;
+  /**
+   * e.g. 10.1109/TPWRS.2024.123456
+   */
+  doi?: string | null;
+  /**
+   * Direct link — DOI URL, arXiv, or PDF. Used if DOI is not available.
+   */
+  paperLink?: string | null;
+  /**
+   * Optional — upload the paper PDF directly
+   */
+  pdfUpload?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "research-areas".
+ */
+export interface ResearchArea {
+  id: number;
+  /**
+   * e.g. "Machine Learning", "Power Systems"
+   */
+  name: string;
+  /**
+   * Small icon or illustration shown on the tile (SVG or PNG recommended)
+   */
+  icon?: (number | null) | Media;
+  /**
+   * 2-line description shown on the tile
+   */
+  description: string;
+  /**
+   * Display order on the Research page (lower = first)
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-  id: string;
+  id: number;
   key: string;
   data:
     | {
@@ -183,20 +368,36 @@ export interface PayloadKv {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
         relationTo: 'users';
-        value: string | User;
+        value: number | User;
       } | null)
     | ({
         relationTo: 'media';
-        value: string | Media;
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'people';
+        value: number | Person;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
+      } | null)
+    | ({
+        relationTo: 'publications';
+        value: number | Publication;
+      } | null)
+    | ({
+        relationTo: 'research-areas';
+        value: number | ResearchArea;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -206,10 +407,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   key?: string | null;
   value?:
@@ -229,7 +430,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -274,6 +475,117 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        avatar?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "people_select".
+ */
+export interface PeopleSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  photo?: T;
+  bio?: T;
+  email?: T;
+  links?:
+    | T
+    | {
+        linkedin?: T;
+        googleScholar?: T;
+        researchGate?: T;
+        cv?: T;
+      };
+  researchInterests?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  thumbnail?: T;
+  shortDescription?: T;
+  fullDescription?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  status?: T;
+  teamMembers?: T;
+  timeline?:
+    | T
+    | {
+        startDate?: T;
+        endDate?: T;
+      };
+  fundingAgency?: T;
+  linkedPublications?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "publications_select".
+ */
+export interface PublicationsSelect<T extends boolean = true> {
+  title?: T;
+  authors?: T;
+  year?: T;
+  type?: T;
+  venueName?: T;
+  researchAreas?: T;
+  abstract?: T;
+  doi?: T;
+  paperLink?: T;
+  pdfUpload?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "research-areas_select".
+ */
+export interface ResearchAreasSelect<T extends boolean = true> {
+  name?: T;
+  icon?: T;
+  description?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -314,6 +626,113 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  /**
+   * e.g. "Intelligent Systems Design Lab"
+   */
+  labName: string;
+  /**
+   * One-line tagline shown on the banner
+   */
+  tagline: string;
+  bannerImage?: (number | null) | Media;
+  about: {
+    /**
+     * 2–3 paragraphs on mission, vision, and area of work
+     */
+    content: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  contact: {
+    email: string;
+    phone?: string | null;
+    address?: {
+      building?: string | null;
+      room?: string | null;
+      college?: string | null;
+      city?: string | null;
+      state?: string | null;
+      pin?: string | null;
+    };
+    /**
+     * Paste the src URL from the Google Maps embed iframe
+     */
+    mapEmbedUrl?: string | null;
+  };
+  socialLinks?: {
+    linkedin?: string | null;
+    twitter?: string | null;
+    github?: string | null;
+    researchGate?: string | null;
+  };
+  /**
+   * Shown in the footer
+   */
+  collegeName: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  labName?: T;
+  tagline?: T;
+  bannerImage?: T;
+  about?:
+    | T
+    | {
+        content?: T;
+      };
+  contact?:
+    | T
+    | {
+        email?: T;
+        phone?: T;
+        address?:
+          | T
+          | {
+              building?: T;
+              room?: T;
+              college?: T;
+              city?: T;
+              state?: T;
+              pin?: T;
+            };
+        mapEmbedUrl?: T;
+      };
+  socialLinks?:
+    | T
+    | {
+        linkedin?: T;
+        twitter?: T;
+        github?: T;
+        researchGate?: T;
+      };
+  collegeName?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

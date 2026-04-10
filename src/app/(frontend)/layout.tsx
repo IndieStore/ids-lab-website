@@ -1,18 +1,25 @@
-import React from 'react'
+import { getPayloadClient } from '@/lib/payload'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 import './styles.css'
 
-export const metadata = {
-  description: 'A blank template using Payload in a Next.js app.',
-  title: 'Payload Blank Template',
-}
+export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
+  const payload = await getPayloadClient()
 
-export default async function RootLayout(props: { children: React.ReactNode }) {
-  const { children } = props
+  const settings = await payload.findGlobal({
+    slug: 'site-settings',
+  })
 
   return (
     <html lang="en">
       <body>
+        <Navbar labName={settings.labName} />
         <main>{children}</main>
+        <Footer
+          labName={settings.labName}
+          collegeName={settings.collegeName}
+          socialLinks={settings.socialLinks}
+        />
       </body>
     </html>
   )

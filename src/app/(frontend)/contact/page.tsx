@@ -6,6 +6,8 @@ export const metadata = {
   title: 'Contact',
 }
 
+export const revalidate = 60 // Revalidate every 60 seconds
+
 export default async function ContactPage() {
   const payload = await getPayloadClient()
 

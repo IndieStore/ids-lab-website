@@ -9,6 +9,8 @@ type Props = {
   params: Promise<{ slug: string }>
 }
 
+export const revalidate = 60 // Revalidate every 60 seconds
+
 export default async function ProjectDetailPage({ params }: Props) {
   const { slug } = await params
   const payload = await getPayloadClient()

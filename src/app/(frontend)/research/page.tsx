@@ -7,6 +7,8 @@ export const metadata = {
   title: 'Research',
 }
 
+export const revalidate = 60 // Revalidate every 60 seconds
+
 export default async function ResearchPage() {
   const payload = await getPayloadClient()
 

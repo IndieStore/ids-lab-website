@@ -14,6 +14,8 @@ const ROLE_LABELS: Record<string, string> = {
   intern: 'Interns',
 }
 
+export const revalidate = 60 // Revalidate every 60 seconds
+
 export default async function PeoplePage() {
   const payload = await getPayloadClient()
 

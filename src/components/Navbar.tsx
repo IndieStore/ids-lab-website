@@ -10,6 +10,7 @@ export default function Navbar({ labName }: Props) {
     { label: 'Research', href: '/research' },
     { label: 'People', href: '/people' },
     { label: 'Contact', href: '/contact' },
+    { label: 'Admin', href: '/admin' },
   ]
 
   return (

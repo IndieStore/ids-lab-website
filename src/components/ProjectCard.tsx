@@ -7,15 +7,15 @@ type Props = {
 }
 
 export default function ProjectCard({ project }: Props) {
-  const thumbnail = project.thumbnail as Media | null
+  const thumbnail = project.thumbnail as any
 
   return (
     <div className="flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow">
       {/* Thumbnail */}
       <div className="relative w-full h-48 bg-gray-100">
-        {thumbnail?.url ? (
+        {thumbnail?.imagekit.url ? (
           <Image
-            src={thumbnail.url}
+            src={thumbnail.imagekit.url}
             alt={thumbnail.alt || project.title}
             fill
             className="object-cover"

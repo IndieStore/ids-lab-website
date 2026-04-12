@@ -22,7 +22,7 @@ const ROLE_COLORS: Record<string, string> = {
 }
 
 export default function PersonCard({ person, featured = false }: Props) {
-  const photo = person.photo as Media | null
+  const photo = person.photo as any
   const cv = person.links?.cv as Media | null
 
   if (featured) {
@@ -30,8 +30,13 @@ export default function PersonCard({ person, featured = false }: Props) {
       <div className="flex flex-col md:flex-row gap-8 p-8 bg-white border border-gray-200 rounded-2xl shadow-sm">
         {/* Photo */}
         <div className="relative w-40 h-40 rounded-full overflow-hidden bg-gray-100 shrink-0 mx-auto md:mx-0">
-          {photo?.url ? (
-            <Image src={photo.url} alt={photo.alt || person.name} fill className="object-cover" />
+          {photo?.imagekit.url ? (
+            <Image
+              src={photo.imagekit.url}
+              alt={photo.alt || person.name}
+              fill
+              className="object-cover"
+            />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center text-5xl text-gray-300">
               👤
@@ -125,8 +130,13 @@ export default function PersonCard({ person, featured = false }: Props) {
     <div className="flex flex-col gap-4 p-6 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-shadow">
       {/* Photo */}
       <div className="relative w-24 h-24 rounded-full overflow-hidden bg-gray-100 mx-auto">
-        {photo?.url ? (
-          <Image src={photo.url} alt={photo.alt || person.name} fill className="object-cover" />
+        {photo?.imagekit.url ? (
+          <Image
+            src={photo.imagekit.url}
+            alt={photo.alt || person.name}
+            fill
+            className="object-cover"
+          />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center text-4xl text-gray-300">
             👤

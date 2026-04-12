@@ -36,7 +36,7 @@ export default async function ResearchPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {areas.map((area) => {
-            const icon = area.icon as Media | null
+            const icon = area.icon as any
             return (
               <div
                 key={area.id}
@@ -44,9 +44,9 @@ export default async function ResearchPage() {
               >
                 {/* Icon */}
                 <div className="w-12 h-12 relative">
-                  {icon?.url ? (
+                  {icon?.imagekit.url ? (
                     <Image
-                      src={icon.url}
+                      src={icon.imagekit.url}
                       alt={icon.alt || area.name}
                       fill
                       className="object-contain"

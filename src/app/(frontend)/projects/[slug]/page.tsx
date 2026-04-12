@@ -24,7 +24,7 @@ export default async function ProjectDetailPage({ params }: Props) {
   const project = docs[0] as Project | undefined
   if (!project) notFound()
 
-  const thumbnail = project.thumbnail as Media | null
+  const thumbnail = project.thumbnail as any
   const team = project.teamMembers as Person[] | null
 
   return (
@@ -69,10 +69,10 @@ export default async function ProjectDetailPage({ params }: Props) {
       )}
 
       {/* Thumbnail */}
-      {thumbnail?.url && (
+      {thumbnail?.imagekit.url && (
         <div className="relative w-full h-72 rounded-xl overflow-hidden mb-10 bg-gray-100">
           <Image
-            src={thumbnail.url}
+            src={thumbnail.imagekit.url}
             alt={thumbnail.alt || project.title}
             fill
             className="object-cover"

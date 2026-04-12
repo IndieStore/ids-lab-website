@@ -24,16 +24,16 @@ export default async function HomePage() {
     slug: 'site-settings',
   })
 
-  const bannerImage = settings.bannerImage as Media | null
+  const bannerImage = settings.bannerImage as any
 
   return (
     <>
       {/* Banner */}
       <section className="relative w-full h-[90vh] flex items-center justify-center text-white">
         {/* Background */}
-        {bannerImage?.url ? (
+        {bannerImage?.imagekit.url ? (
           <Image
-            src={bannerImage.url}
+            src={bannerImage.imagekit.url}
             alt={bannerImage.alt || 'Banner'}
             fill
             className="object-cover"

@@ -29,6 +29,7 @@
     "next": "16.2.3",
     "nodemailer": "^8.0.5",
     "payload": "3.82.1",
+    "payloadcms-plugin-imagekit": "^0.5.0",
     "postcss": "^8.5.9",
     "react": "19.2.4",
     "react-dom": "19.2.4",

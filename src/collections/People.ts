@@ -24,6 +24,8 @@ export const People: CollectionConfig = {
         { label: 'PhD Student', value: 'phd' },
         { label: 'JRF', value: 'jrf' },
         { label: 'Intern', value: 'intern' },
+        { label: 'M.Tech Student', value: 'mtech' },
+        { label: 'B.Tech Student', value: 'btech' },
       ],
     },
     {

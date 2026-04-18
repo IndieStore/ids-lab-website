@@ -12,8 +12,8 @@ const links = [
   { label: 'Projects', href: '/projects' },
   { label: 'Research', href: '/research' },
   { label: 'People', href: '/people' },
+  { label: 'News & Events', href: '/news-and-events' },
   { label: 'Contact', href: '/contact' },
-  { label: 'Admin', href: '/admin' },
 ]
 
 export default function Navbar({ labName }: Props) {

@@ -73,6 +73,7 @@ export interface Config {
     projects: Project;
     publications: Publication;
     'research-areas': ResearchArea;
+    'news-and-events': NewsAndEvent;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -86,6 +87,7 @@ export interface Config {
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     publications: PublicationsSelect<false> | PublicationsSelect<true>;
     'research-areas': ResearchAreasSelect<false> | ResearchAreasSelect<true>;
+    'news-and-events': NewsAndEventsSelect<false> | NewsAndEventsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -161,6 +163,12 @@ export interface User {
 export interface Media {
   id: number;
   alt: string;
+  imagekit?: {
+    fileId?: string | null;
+    thumbnailUrl?: string | null;
+    url?: string | null;
+    AITags?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -198,7 +206,7 @@ export interface Media {
 export interface Person {
   id: number;
   name: string;
-  role: 'pi' | 'phd' | 'jrf' | 'intern';
+  role: 'pi' | 'phd' | 'jrf' | 'intern' | 'mtech' | 'btech';
   photo?: (number | null) | Media;
   bio: string;
   email: string;
@@ -348,6 +356,39 @@ export interface ResearchArea {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news-and-events".
+ */
+export interface NewsAndEvent {
+  id: number;
+  type: 'news' | 'event';
+  eventName: string;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  date?: string | null;
+  images?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -393,6 +434,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'research-areas';
         value: number | ResearchArea;
+      } | null)
+    | ({
+        relationTo: 'news-and-events';
+        value: number | NewsAndEvent;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -464,6 +509,14 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  imagekit?:
+    | T
+    | {
+        fileId?: T;
+        thumbnailUrl?: T;
+        url?: T;
+        AITags?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -584,6 +637,24 @@ export interface ResearchAreasSelect<T extends boolean = true> {
   icon?: T;
   description?: T;
   order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news-and-events_select".
+ */
+export interface NewsAndEventsSelect<T extends boolean = true> {
+  type?: T;
+  eventName?: T;
+  description?: T;
+  date?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

@@ -4,7 +4,9 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
-import imagekitPlugin from 'payloadcms-plugin-imagekit'
+import imagekitPluginPkg from 'payloadcms-plugin-imagekit'
+
+const imagekitPlugin = (imagekitPluginPkg as any).default ?? imagekitPluginPkg
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -12,6 +14,7 @@ import { People } from './collections/People'
 import { Projects } from './collections/Projects'
 import { Publications } from './collections/Publications'
 import { ResearchAreas } from './collections/ResearchAreas'
+import { NewsAndEvents } from './collections/NewsAndEvents'
 import { SiteSettings } from './globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
@@ -24,7 +27,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, People, Projects, Publications, ResearchAreas],
+  collections: [Users, Media, People, Projects, Publications, ResearchAreas, NewsAndEvents],
   globals: [SiteSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

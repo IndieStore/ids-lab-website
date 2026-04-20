@@ -6,10 +6,13 @@ export const metadata = {
   title: 'People',
 }
 
-const ROLE_ORDER = ['pi', 'phd', 'jrf', 'intern'] as const
+const ROLE_ORDER = ['pi', 'phd', 'mtech', 'btech', 'jrf', 'intern'] as const
+
 const ROLE_LABELS: Record<string, string> = {
   pi: 'PI / Lab Director',
   phd: 'PhD Students',
+  mtech: 'M.Tech Students',
+  btech: 'B.Tech Students',
   jrf: 'Junior Research Fellows',
   intern: 'Interns',
 }
